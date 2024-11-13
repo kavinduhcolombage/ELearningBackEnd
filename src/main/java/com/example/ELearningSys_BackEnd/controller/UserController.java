@@ -54,4 +54,13 @@ public class UserController {
         userService.deleteUser(id);
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody User user){
+        try {
+            return userService.signup(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
