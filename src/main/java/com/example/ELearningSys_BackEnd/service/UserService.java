@@ -77,7 +77,7 @@ public class UserService {
     //checking username is exist or not
     private boolean checkUserEmailExist(User user){
         try {
-            if(userRepository.findByEmail(user.getUserName()).isEmpty()){
+            if(userRepository.findByEmail(user.getEmail()).isEmpty()){
                 return false;
             }else{
                 return true;
