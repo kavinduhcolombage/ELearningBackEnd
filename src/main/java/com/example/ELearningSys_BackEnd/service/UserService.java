@@ -59,7 +59,7 @@ public class UserService {
     public ResponseEntity<String> signup(User user) {
         try {
             if(validateUser(user)){
-                if (!checkUserNameExist(user)) {
+                if (!checkUserEmailExist(user)) {
                     user.setRole(Role.STUDENT);
                     userRepository.save(user);
                     return new ResponseEntity<>("Succesfully add new user", HttpStatus.OK);
@@ -75,9 +75,9 @@ public class UserService {
     }
 
     //checking username is exist or not
-    private boolean checkUserNameExist(User user){
+    private boolean checkUserEmailExist(User user){
         try {
-            if(userRepository.findByUserName(user.getUserName()).isEmpty()){
+            if(userRepository.findByEmail(user.getUserName()).isEmpty()){
                 return false;
             }else{
                 return true;

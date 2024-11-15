@@ -9,5 +9,5 @@ import com.example.ELearningSys_BackEnd.model.User;
 public interface UserRepository extends JpaRepository<User, Integer>{
 
     //Crete custom Jpa method using naming convention
-    Optional<User> findByUserName(String userName);
+    Optional<User> findByEmail(String userName);
 }
