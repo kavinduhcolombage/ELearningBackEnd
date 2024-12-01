@@ -90,7 +90,7 @@ public class UserService {
 
     //check fields of data
     private boolean validateUser(User user){
-        if(user.getId() != 0 && user.getUserName() != null && user.getPassWord() != null && user.getEmail() != null)
+        if(user.getUserName() != null && user.getPassWord() != null && user.getEmail() != null)
             return true;
         else
             return false;

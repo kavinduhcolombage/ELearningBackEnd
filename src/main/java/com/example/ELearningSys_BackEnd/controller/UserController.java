@@ -63,4 +63,10 @@ public class UserController {
         }
         return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping("test")
+    public void test(){
+        System.out.println("this is test case");
+        User user = new User();
+    }
 }
