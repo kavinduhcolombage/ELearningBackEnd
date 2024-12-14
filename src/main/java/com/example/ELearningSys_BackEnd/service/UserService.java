@@ -6,17 +6,22 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.ELearningSys_BackEnd.model.Role;
 import com.example.ELearningSys_BackEnd.model.User;
+import com.example.ELearningSys_BackEnd.model.UserPriciple;
 import com.example.ELearningSys_BackEnd.repository.UserRepository;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService{
   
     @Autowired
     private UserRepository userRepository;
+    
 
     public List<User> getAllUsers(){
         return userRepository.findAll();
@@ -28,7 +33,7 @@ public class UserService {
     }
 
     //Create user
-    public User createUser(User user){
+    public User createUser(User user){ 
         return userRepository.save(user);
     }
     
@@ -39,8 +44,8 @@ public class UserService {
         
         if (existingUserOptional.isPresent()) {
             User existingUser = existingUserOptional.get();
-            existingUser.setUserName(user.getUserName());
-            existingUser.setPassWord(user.getPassWord());
+            existingUser.setUsername(user.getUsername());
+            existingUser.setPassword(user.getPassword());
             existingUser.setEmail(user.getEmail());
             existingUser.setRole(user.getRole());
             //save updated entity
@@ -90,10 +95,23 @@ public class UserService {
 
     //check fields of data
     private boolean validateUser(User user){
-        if(user.getUserName() != null && user.getPassWord() != null && user.getEmail() != null)
+        if(user.getUsername() != null && user.getPassword() != null && user.getEmail() != null)
             return true;
         else
             return false;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+
+        if(user == null){
+            System.out.println("user not found");
+            throw new UsernameNotFoundException("user not found");
+        }
+        // need to return user details, for that userpriciple class created
+        return new UserPriciple(user);
+        
     }
 
 }

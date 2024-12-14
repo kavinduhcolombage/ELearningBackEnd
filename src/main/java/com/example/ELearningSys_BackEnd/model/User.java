@@ -9,8 +9,8 @@ import lombok.Data;
 public class User {
     @Id
     private int id;
-    private String userName;
-    private String passWord;
+    private String username;
+    private String password;
     private String email;
     private Role role;
 }

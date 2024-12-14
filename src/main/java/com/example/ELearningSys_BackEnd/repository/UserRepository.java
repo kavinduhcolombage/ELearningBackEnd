@@ -10,4 +10,5 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 
     //custom Jpa method using naming convention
     Optional<User> findByEmail(String email);
+    User findByUsername(String username);
 }
