@@ -6,9 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.ELearningSys_BackEnd.model.Role;
@@ -16,7 +13,7 @@ import com.example.ELearningSys_BackEnd.model.User;
 import com.example.ELearningSys_BackEnd.repository.UserRepository;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
   
     @Autowired
     private UserRepository userRepository;
@@ -99,9 +96,4 @@ public class UserService implements UserDetailsService {
             return false;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
-    }
 }
