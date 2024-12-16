@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.ELearningSys_BackEnd.model.Role;
@@ -21,6 +22,8 @@ public class UserService implements UserDetailsService{
   
     @Autowired
     private UserRepository userRepository;
+
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
     
 
     public List<User> getAllUsers(){
@@ -34,7 +37,7 @@ public class UserService implements UserDetailsService{
 
     //Create user
     public User createUser(User user){ 
-        user.setPassword("{noop}"+ user.getPassword());  //for test purpose, not for production
+        user.setPassword(encoder.encode(user.getPassword()));   
         return userRepository.save(user);
     }
     
