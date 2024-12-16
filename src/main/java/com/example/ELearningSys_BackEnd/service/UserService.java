@@ -34,6 +34,7 @@ public class UserService implements UserDetailsService{
 
     //Create user
     public User createUser(User user){ 
+        user.setPassword("{noop}"+ user.getPassword());  //for test purpose, not for production
         return userRepository.save(user);
     }
     
