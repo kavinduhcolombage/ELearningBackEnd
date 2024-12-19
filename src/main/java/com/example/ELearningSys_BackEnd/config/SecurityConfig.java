@@ -27,11 +27,14 @@ public class SecurityConfig {
 
         return http
             .csrf(customizer -> customizer.disable())
-            .authorizeHttpRequests(request -> request.anyRequest().authenticated())
+            .authorizeHttpRequests(request -> request
+            .requestMatchers("/users/signup")
+            .permitAll()
+            .anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults()) //for rest api
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .build();
-
+ 
 
         //http.formLogin(Customizer.withDefaults())
         

@@ -57,6 +57,11 @@ public class UserController {
         userService.deleteUser(id);
     }
 
+    @PostMapping("/signuptest")
+    public String reisterTest(@RequestBody User user){
+        return "success";
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody User user){
         try {
