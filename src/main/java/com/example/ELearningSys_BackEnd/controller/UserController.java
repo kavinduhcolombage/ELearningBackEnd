@@ -57,11 +57,6 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @PostMapping("/signuptest")
-    public String reisterTest(@RequestBody User user){
-        return "success";
-    }
-
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody User user){
         try {
@@ -81,5 +76,11 @@ public class UserController {
     @GetMapping("csrf")
     public CsrfToken getCsrfToken(HttpServletRequest request){
         return (CsrfToken) request.getAttribute("_csrf");
+    }
+
+    @PostMapping("login")
+    public String login(@RequestBody User user){
+        userService.verify(user);
+        return "login succees";
     }
 }

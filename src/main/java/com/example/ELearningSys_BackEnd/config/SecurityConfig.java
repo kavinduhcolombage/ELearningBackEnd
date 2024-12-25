@@ -29,9 +29,9 @@ public class SecurityConfig {
 
         
         return http
-            .csrf(customizer -> customizer.disable())
+            .csrf(customizer -> customizer.disable()) 
             .authorizeHttpRequests(request -> request
-            .requestMatchers("/users/{id:[0-9]+}")
+            .requestMatchers("/users/login", "/users/list")
             .permitAll()
             .anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults()) //for rest api
