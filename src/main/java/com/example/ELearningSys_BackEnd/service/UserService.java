@@ -18,7 +18,7 @@ import com.example.ELearningSys_BackEnd.model.UserPriciple;
 import com.example.ELearningSys_BackEnd.repository.UserRepository;
 
 @Service
-public class UserService implements UserDetailsService{
+public class UserService {
   
     @Autowired
     private UserRepository userRepository;
@@ -109,18 +109,18 @@ public class UserService implements UserDetailsService{
             return false;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    // @Override
+    // public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    //     User user = userRepository.findByUsername(username);
 
-        if(user == null){
-            System.out.println("user not found");
-            throw new UsernameNotFoundException("user not found");
-        }
-        // need to return user details, for that userpriciple class created
-        return new UserPriciple(user);
+    //     if(user == null){
+    //         System.out.println("user not found");
+    //         throw new UsernameNotFoundException("user not found");
+    //     }
+    //     // need to return user details, for that userpriciple class created
+    //     return new UserPriciple(user);
         
-    }
+    // }
 
     public String verify(User user){
         return "test";
