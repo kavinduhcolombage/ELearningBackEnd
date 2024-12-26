@@ -20,17 +20,17 @@ public class JwtUtil {
             .compact();
     }
 
-    public String extractEmail(String tocken){
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(tocken).getBody().getSubject();
-    }
+    // public String extractEmail(String tocken){
+    //     return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(tocken).getBody().getSubject();
+    // }
 
-    public boolean isTokenExpired(String token){
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getExpiration().before(new Date());
-    }
+    // public boolean isTokenExpired(String token){
+    //     return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getExpiration().before(new Date());
+    // }
 
-    public boolean validateToken(String token, String email){
-        return email.equals(extractEmail(token)) && !isTokenExpired(token);
-    }
+    // public boolean validateToken(String token, String email){
+    //     return email.equals(extractEmail(token)) && !isTokenExpired(token);
+    // }
 
     
 }

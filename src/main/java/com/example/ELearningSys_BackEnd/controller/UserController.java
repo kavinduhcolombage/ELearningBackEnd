@@ -80,7 +80,7 @@ public class UserController {
 
     @PostMapping("login")
     public String login(@RequestBody User user){
-        System.out.println(user);
+        System.out.println("controller execute");
         return userService.verify(user);
     }
 }

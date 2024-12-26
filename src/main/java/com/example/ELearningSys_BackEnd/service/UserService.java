@@ -29,6 +29,9 @@ public class UserService {
     @Autowired
     AuthenticationManager authManager;
 
+    @Autowired
+    private JWTService jwtService;
+
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     
@@ -115,9 +118,9 @@ public class UserService {
     public String verify(User user){
         Authentication authentication =  
         authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-
+        System.out.println("verfy execute");
         if (authentication.isAuthenticated()) {
-            return "sucsess";
+            return jwtService.generateToken(user.getUsername());
         }
         return "fail";
     }
