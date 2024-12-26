@@ -43,15 +43,14 @@ public class JWTService {
             .add(claims)
             .subject(username)
             .issuedAt(new Date(System.currentTimeMillis()))
-            .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 10))
+            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))  //expire in 10 minutes
             .and()
-            .signWith(getKey())
+            .signWith(getKey())   //sign with generated key
             .compact();      
     }
-
+ 
     private Key getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
 }
