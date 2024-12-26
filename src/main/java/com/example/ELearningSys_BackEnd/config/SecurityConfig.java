@@ -24,16 +24,17 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
     
+    //custom security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 
         
         return http
-            .csrf(customizer -> customizer.disable()) 
+            .csrf(customizer -> customizer.disable())      //disabling csrf using lamda syntax
             .authorizeHttpRequests(request -> request
-            .requestMatchers("/users/login", "/users/list")
-            .permitAll()
-            .anyRequest().authenticated())
+                .requestMatchers("/users/login", "/users/list")
+                .permitAll()
+                .anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults()) //for rest api
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .build();
