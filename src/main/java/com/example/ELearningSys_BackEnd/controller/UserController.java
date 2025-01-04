@@ -42,7 +42,8 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);        
     }
 
-    @PostMapping
+
+    @PostMapping("register")
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
