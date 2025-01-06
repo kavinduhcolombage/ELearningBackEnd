@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.ELearningSys_BackEnd.jwt.JwtFilter;
+import com.example.ELearningSys_BackEnd.security.JwtFilter;
 
 @Configuration
 @EnableWebSecurity

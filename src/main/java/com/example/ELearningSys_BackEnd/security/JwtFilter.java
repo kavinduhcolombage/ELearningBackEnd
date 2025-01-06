@@ -1,4 +1,4 @@
-package com.example.ELearningSys_BackEnd.jwt;
+package com.example.ELearningSys_BackEnd.security;
 
 import java.io.IOException;
 
@@ -10,9 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.example.ELearningSys_BackEnd.service.CustomUserDetailsService;
-import com.example.ELearningSys_BackEnd.service.JWTService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

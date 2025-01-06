@@ -1,4 +1,4 @@
-package com.example.ELearningSys_BackEnd.service;
+package com.example.ELearningSys_BackEnd.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

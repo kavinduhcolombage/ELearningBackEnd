@@ -1,4 +1,4 @@
-package com.example.ELearningSys_BackEnd.service;
+package com.example.ELearningSys_BackEnd.security;
 
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;

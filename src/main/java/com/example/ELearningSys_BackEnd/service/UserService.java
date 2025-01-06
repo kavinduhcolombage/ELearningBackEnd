@@ -19,6 +19,7 @@ import com.example.ELearningSys_BackEnd.model.Role;
 import com.example.ELearningSys_BackEnd.model.User;
 import com.example.ELearningSys_BackEnd.model.UserPriciple;
 import com.example.ELearningSys_BackEnd.repository.UserRepository;
+import com.example.ELearningSys_BackEnd.security.JWTService;
 
 @Service
 public class UserService {
