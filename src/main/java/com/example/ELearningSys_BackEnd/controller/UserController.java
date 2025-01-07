@@ -79,8 +79,8 @@ public class UserController {
         return (CsrfToken) request.getAttribute("_csrf");
     }
 
-    @PostMapping("login")
-    public String login(@RequestBody User user){
-        return userService.verify(user);
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user){
+        return userService.login(user);
     }
 }

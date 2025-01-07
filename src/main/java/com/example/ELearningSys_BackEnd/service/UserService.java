@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -118,14 +119,21 @@ public class UserService {
             return false;
     }
 
-    public String verify(User user){
-        Authentication authentication =  
-        authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-        
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getEmail());
-        }
-        return "fail";
+    public ResponseEntity<String> login(User user){
+        try {
+            Authentication authentication =  
+            authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+
+            if (authentication.isAuthenticated()) {
+                String token = jwtService.generateToken(user.getEmail());
+                return ResponseEntity.ok(token);
+            }else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            }
+        } catch (AuthenticationException e) { 
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }        
     }
 
 }
