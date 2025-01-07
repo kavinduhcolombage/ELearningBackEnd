@@ -43,7 +43,7 @@ public class UserController {
     }
 
 
-    @PostMapping("register")
+    @PostMapping("create")
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
@@ -58,14 +58,14 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<String> signup(@RequestBody User user){
         try {
-            return userService.signup(user);
+            return userService.registerUser(user);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+        }   
     }
 
     @GetMapping("test")

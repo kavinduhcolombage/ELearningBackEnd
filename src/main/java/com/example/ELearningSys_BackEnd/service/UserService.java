@@ -77,18 +77,19 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    //sign up(register new user)
-    public ResponseEntity<String> signup(User user) {
+    //register new user
+    public ResponseEntity<String> registerUser(User user) {
         try {
             if(validateUser(user)){
                 if (!checkUserEmailExist(user)) {
                     user.setRole(Role.STUDENT);
+                    user.setPassword(encoder.encode(user.getPassword()));
                     userRepository.save(user);
-                    return new ResponseEntity<>("Succesfully add new user", HttpStatus.OK);
+                    return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
                 }else
-                    return new ResponseEntity<>("user already exist", HttpStatus.CONFLICT); 
+                    return new ResponseEntity<>("Email already registered", HttpStatus.CONFLICT); 
             }else{
-                return new ResponseEntity<>("Invalid Data", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Invalid details", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,7 +97,7 @@ public class UserService {
         return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);     
     }
 
-    //checking username is exist or not
+    //checking user email is exist or not
     private boolean checkUserEmailExist(User user){
         try {
             if(userRepository.findByEmail(user.getEmail()) == null){
@@ -107,13 +108,12 @@ public class UserService {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-        //return true;           
+        }          
     }
 
     //check fields of data
     private boolean validateUser(User user){
-        if(user.getUsername() != null && user.getPassword() != null && user.getEmail() != null)
+        if(user.getFirstName() != null && user.getPassword() != null && user.getEmail() != null)
             return true;
         else
             return false;
