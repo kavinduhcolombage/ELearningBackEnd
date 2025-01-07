@@ -98,15 +98,16 @@ public class UserService {
     //checking username is exist or not
     private boolean checkUserEmailExist(User user){
         try {
-            if(userRepository.findByEmail(user.getEmail()).isEmpty()){
+            if(userRepository.findByEmail(user.getEmail()) == null){
                 return false;
             }else{
                 return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return true;           
+        //return true;           
     }
 
     //check fields of data
@@ -119,10 +120,10 @@ public class UserService {
 
     public String verify(User user){
         Authentication authentication =  
-        authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getUsername());
+            return jwtService.generateToken(user.getEmail());
         }
         return "fail";
     }
