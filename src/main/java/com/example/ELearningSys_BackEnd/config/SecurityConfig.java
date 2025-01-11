@@ -38,7 +38,7 @@ public class SecurityConfig {
         return http
             .csrf(customizer -> customizer.disable())      //disabling csrf using lamda syntax
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/users/login", "/users/list" , "/users/register")
+                .requestMatchers("/api/v1/auth/**", "/users/list")
                 .permitAll()
                 .anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults()) //for rest api

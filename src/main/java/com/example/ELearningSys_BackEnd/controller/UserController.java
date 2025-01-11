@@ -58,16 +58,6 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> signup(@RequestBody User user){
-        try {
-            return userService.registerUser(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-        }   
-    }
-
     @GetMapping("test")
     public String test(HttpServletRequest request){
         System.out.println("this is test case");
@@ -77,10 +67,5 @@ public class UserController {
     @GetMapping("csrf")
     public CsrfToken getCsrfToken(HttpServletRequest request){
         return (CsrfToken) request.getAttribute("_csrf");
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user){
-        return userService.login(user);
     }
 }
