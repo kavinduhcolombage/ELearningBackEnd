@@ -11,14 +11,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.ELearningSys_BackEnd.model.Role;
 import com.example.ELearningSys_BackEnd.model.User;
-import com.example.ELearningSys_BackEnd.model.UserPriciple;
 import com.example.ELearningSys_BackEnd.repository.UserRepository;
 import com.example.ELearningSys_BackEnd.security.JWTService;
 
@@ -55,21 +51,23 @@ public class UserService {
     }
     
     //update user
-    public User updateUser(User user){
+    public ResponseEntity<User> updateUser(User user) {
+        User existingUser = userRepository.findByEmail(user.getEmail());
 
-        Optional<User> existingUserOptional = userRepository.findById(user.getId());
-        
-        if (existingUserOptional.isPresent()) {
-            User existingUser = existingUserOptional.get();
+        if (existingUser != null) {
             existingUser.setUsername(user.getUsername());
-            existingUser.setPassword(user.getPassword());
-            existingUser.setEmail(user.getEmail());
-            existingUser.setRole(user.getRole());
-            //save updated entity
-            return userRepository.save(existingUser);
-        }else{
-            return null;
-        }   
+            existingUser.setFirstName(user.getFirstName());
+            existingUser.setLastName(user.getLastName());
+
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                existingUser.setPassword(encoder.encode(user.getPassword()));
+            }
+            // save updated entity
+            userRepository.save(existingUser);
+            return new ResponseEntity<>(existingUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     //delete user by ID

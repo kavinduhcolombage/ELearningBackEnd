@@ -22,7 +22,7 @@ import com.example.ELearningSys_BackEnd.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     @Autowired
@@ -48,11 +48,11 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @PutMapping
-    public User updateUser(@RequestBody User user){
+    @PutMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestBody User user){
         return userService.updateUser(user); 
     }
-    
+
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable int id){
         userService.deleteUser(id);
