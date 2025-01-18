@@ -12,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.ELearningSys_BackEnd.model.Role;
@@ -22,7 +21,7 @@ import com.example.ELearningSys_BackEnd.security.JWTService;
 
 @Service
 public class UserService {
-  
+
     @Autowired
     private UserRepository userRepository;
 
@@ -34,25 +33,52 @@ public class UserService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    
-
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     // Get a user by ID
-    public Optional<User> getUserById(int id){
+    public Optional<User> getUserById(int id) {
         return userRepository.findById(id);
     }
 
-    //Create user
-    public User createUser(User user){ 
-        user.setRole(Role.STUDENT);
-        user.setPassword(encoder.encode(user.getPassword()));   
-        return userRepository.save(user);
+    // Create user
+    public ResponseEntity<String> createUser(User user) {
+        System.out.println("i am user service");
+        try {
+            if (validateUser(user)) {
+                System.out.println("user validated");
+                if (!checkUserEmailExist(user)) {
+                    System.out.println("email not exist");
+                    if (isValidRole(user.getRole())) {
+                        System.out.println("role is valid");
+                        user.setPassword(encoder.encode(user.getPassword()));
+                        userRepository.save(user);
+                        return new ResponseEntity<>("User Created successfully", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("Invalid role", HttpStatus.BAD_REQUEST);
+                    }
+                } else
+                    return new ResponseEntity<>("Email already Used", HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<>("Invalid details", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    
-    //update user
+
+    private boolean isValidRole(Role role) {
+        for (Role r : Role.values()) {
+            if (r == role) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // update user
     public ResponseEntity<User> updateUser(User user) {
         User existingUser = userRepository.findByEmail(user.getEmail());
 
@@ -63,7 +89,7 @@ public class UserService {
 
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 existingUser.setPassword(encoder.encode(user.getPassword()));
-            }else{
+            } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             // save updated entity
@@ -74,57 +100,57 @@ public class UserService {
         }
     }
 
-    //delete user by ID
-    public void deleteUser(int id){
+    // delete user by ID
+    public void deleteUser(int id) {
         userRepository.deleteById(id);
     }
 
-    //register new user
+    // register new user
     public ResponseEntity<String> registerUser(User user) {
         try {
-            if(validateUser(user)){
+            if (validateUser(user)) {
                 if (!checkUserEmailExist(user)) {
                     user.setRole(Role.STUDENT);
                     user.setPassword(encoder.encode(user.getPassword()));
                     userRepository.save(user);
                     return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
-                }else
-                    return new ResponseEntity<>("Email already registered", HttpStatus.CONFLICT); 
-            }else{
+                } else
+                    return new ResponseEntity<>("Email already registered", HttpStatus.CONFLICT);
+            } else {
                 return new ResponseEntity<>("Invalid details", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);     
+        return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    //checking user email is exist or not
-    private boolean checkUserEmailExist(User user){
+    // checking user email is exist or not
+    private boolean checkUserEmailExist(User user) {
         try {
-            if(userRepository.findByEmail(user.getEmail()) == null){
+            if (userRepository.findByEmail(user.getEmail()) == null) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }          
+        }
     }
 
-    //check fields of data
-    private boolean validateUser(User user){
-        if(user.getFirstName() != null && user.getPassword() != null && user.getEmail() != null)
+    // check fields of data
+    private boolean validateUser(User user) {
+        if (user.getFirstName() != null && user.getPassword() != null && user.getEmail() != null)
             return true;
         else
             return false;
     }
 
-    public ResponseEntity<String> login(User user){
+    public ResponseEntity<String> login(User user) {
         try {
-            Authentication authentication =  
-            authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+            Authentication authentication = authManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
             if (authentication.isAuthenticated()) {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -132,13 +158,13 @@ public class UserService {
                 System.out.println("User Role: " + existingUser.getRole().name());
                 String token = jwtService.generateToken(user.getEmail(), existingUser.getRole().name());
                 return ResponseEntity.ok(token);
-            }else{
+            } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
             }
-        } catch (AuthenticationException e) { 
+        } catch (AuthenticationException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }        
+        }
     }
 
 }
