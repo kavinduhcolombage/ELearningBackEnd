@@ -63,6 +63,8 @@ public class UserService {
 
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 existingUser.setPassword(encoder.encode(user.getPassword()));
+            }else{
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             // save updated entity
             userRepository.save(existingUser);
