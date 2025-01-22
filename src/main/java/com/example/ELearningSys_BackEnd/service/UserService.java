@@ -74,6 +74,8 @@ public class UserService {
         return false;
     }
 
+
+
     // update user
     public ResponseEntity<User> updateUser(User user) {
         User existingUser = userRepository.findByEmail(user.getEmail());
@@ -161,6 +163,10 @@ public class UserService {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 }
