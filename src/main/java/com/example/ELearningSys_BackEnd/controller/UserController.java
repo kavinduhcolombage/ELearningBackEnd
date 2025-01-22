@@ -1,6 +1,9 @@
 package com.example.ELearningSys_BackEnd.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +26,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable int id) {
+        Optional<User> user = userService.getUserById(id);
+        if (user.isPresent())
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         return userService.updateUser(user);
@@ -32,6 +44,7 @@ public class UserController {
     public void deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
     }
+    
 
     @GetMapping("test")
     public String test(HttpServletRequest request) {

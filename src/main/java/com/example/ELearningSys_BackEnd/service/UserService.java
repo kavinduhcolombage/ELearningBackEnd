@@ -44,14 +44,10 @@ public class UserService {
 
     // Create user
     public ResponseEntity<String> createUser(User user) {
-        System.out.println("i am user service");
         try {
             if (validateUser(user)) {
-                System.out.println("user validated");
                 if (!checkUserEmailExist(user)) {
-                    System.out.println("email not exist");
                     if (isValidRole(user.getRole())) {
-                        System.out.println("role is valid");
                         user.setPassword(encoder.encode(user.getPassword()));
                         userRepository.save(user);
                         return new ResponseEntity<>("User Created successfully", HttpStatus.OK);
