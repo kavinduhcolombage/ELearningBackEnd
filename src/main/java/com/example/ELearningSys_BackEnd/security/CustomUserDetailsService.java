@@ -1,5 +1,7 @@
 package com.example.ELearningSys_BackEnd.security;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,12 +21,13 @@ public class CustomUserDetailsService implements UserDetailsService{
     //load user by email
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+        Optional<User> userOptional = userRepository.findByEmail(email);
 
-        if(user == null){
+        if(userOptional.isEmpty()){
             System.out.println("email not found");
             throw new UsernameNotFoundException("email not found");
         }
+        User user = userOptional.get();
         // need to return user details, for that userpriciple class created
         return new UserPriciple(user);
         

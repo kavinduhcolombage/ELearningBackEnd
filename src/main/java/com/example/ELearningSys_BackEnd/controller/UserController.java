@@ -30,13 +30,14 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<User>> getUserById(@PathVariable int id) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        User user = userService.getUserByEmail(email);
-        if (user.getId() == id)
-            return new ResponseEntity<>(Optional.of(user), HttpStatus.OK);
+        Optional<User> user = userService.getUserByEmail(email);
+        if (user.get().getId() == id)
+            return new ResponseEntity<>(user, HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); 
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PutMapping("/update")
@@ -48,7 +49,6 @@ public class UserController {
     public void deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
     }
-    
 
     @GetMapping("test")
     public String test(HttpServletRequest request) {

@@ -74,13 +74,13 @@ public class UserService {
         return false;
     }
 
-
-
     // update user
     public ResponseEntity<User> updateUser(User user) {
-        User existingUser = userRepository.findByEmail(user.getEmail());
 
-        if (existingUser != null) {
+        Optional<User> existingUserOptional = userRepository.findByEmail(user.getEmail());
+
+        if (existingUserOptional.isPresent()) {
+            User existingUser = existingUserOptional.get();
             existingUser.setUsername(user.getUsername());
             existingUser.setFirstName(user.getFirstName());
             existingUser.setLastName(user.getLastName());
@@ -152,9 +152,9 @@ public class UserService {
 
             if (authentication.isAuthenticated()) {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                User existingUser = userRepository.findByEmail(userDetails.getUsername());
-                System.out.println("User Role: " + existingUser.getRole().name());
-                String token = jwtService.generateToken(user.getEmail(), existingUser.getRole().name());
+                Optional<User> existingUser = userRepository.findByEmail(userDetails.getUsername());
+                System.out.println("logged User Role: " + existingUser.get().getRole().name());
+                String token = jwtService.generateToken(user.getEmail(), existingUser.get().getRole().name());
                 return ResponseEntity.ok(token);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
@@ -165,7 +165,7 @@ public class UserService {
         }
     }
 
-    public User getUserByEmail(String email) {
+    public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
