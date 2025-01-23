@@ -28,16 +28,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable int id) {
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        Optional<User> user = userService.getUserByEmail(email);
-        if (user.get().getId() == id)
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return userService.getUserByEmail(email);
     }
 
     @PutMapping("/update")

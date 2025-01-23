@@ -38,8 +38,12 @@ public class UserService {
     }
 
     // Get a user by ID
-    public Optional<User> getUserById(int id) {
-        return userRepository.findById(id);
+    public ResponseEntity<User> getUserById(int id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent())
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);        
     }
 
     // Create user
@@ -165,8 +169,12 @@ public class UserService {
         }
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public ResponseEntity<User> getUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent())
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }

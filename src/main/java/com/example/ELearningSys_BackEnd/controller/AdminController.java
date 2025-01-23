@@ -37,12 +37,8 @@ public class AdminController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable int id) {
-        Optional<User> user = userService.getUserById(id);
-        if (user.isPresent())
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<User> getUserById(@PathVariable int id) {
+        return userService.getUserById(id);
     }
 
     @DeleteMapping("{id}")
