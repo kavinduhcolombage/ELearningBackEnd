@@ -33,24 +33,11 @@ public class UserService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    // Get a user by ID
-    public ResponseEntity<User> getUserById(int id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent())
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);        
-    }
-
-    // Create user
+    // Create user by admin
     public ResponseEntity<String> createUser(User user) {
         try {
-            if (validateUser(user)) {
-                if (!checkUserEmailExist(user)) {
+            if (validUserDetails(user) && validEmail(user) && validPassword(user)) {
+                if (!isEmailAlreadyInUse(user)) {
                     if (isValidRole(user.getRole())) {
                         user.setPassword(encoder.encode(user.getPassword()));
                         userRepository.save(user);
@@ -69,49 +56,11 @@ public class UserService {
         return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private boolean isValidRole(Role role) {
-        for (Role r : Role.values()) {
-            if (r == role) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // update user
-    public ResponseEntity<User> updateUser(User user, String email) {
-
-        Optional<User> existingUserOptional = userRepository.findByEmail(email);
-
-        if (existingUserOptional.isPresent()) {
-            User existingUser = existingUserOptional.get();
-            existingUser.setUsername(user.getUsername());
-            existingUser.setFirstName(user.getFirstName());
-            existingUser.setLastName(user.getLastName());
-
-            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-                existingUser.setPassword(encoder.encode(user.getPassword()));
-            } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            // save updated entity
-            userRepository.save(existingUser);
-            return new ResponseEntity<>(existingUser, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    // delete user by ID
-    public void deleteUser(int id) {
-        userRepository.deleteById(id);
-    }
-
     // register new user
     public ResponseEntity<String> registerUser(User user) {
         try {
-            if (validateUser(user)) {
-                if (!checkUserEmailExist(user)) {
+            if (validUserDetails(user) && validEmail(user) && validPassword(user)) {
+                if (!isEmailAlreadyInUse(user)) {
                     user.setRole(Role.STUDENT);
                     user.setPassword(encoder.encode(user.getPassword()));
                     userRepository.save(user);
@@ -127,28 +76,7 @@ public class UserService {
         return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // checking user email is exist or not
-    private boolean checkUserEmailExist(User user) {
-        try {
-            if (userRepository.findByEmail(user.getEmail()) == null) {
-                return false;
-            } else {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // check fields of data
-    private boolean validateUser(User user) {
-        if (user.getFirstName() != null && user.getPassword() != null && user.getEmail() != null)
-            return true;
-        else
-            return false;
-    }
-
+    // log user
     public ResponseEntity<String> login(User user) {
         try {
             Authentication authentication = authManager
@@ -169,8 +97,81 @@ public class UserService {
         }
     }
 
+    // Get all users
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    // Get a user by ID
+    public ResponseEntity<User> getUserById(int id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent())
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);        
+    }
+
+    // Get a user by email
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
+    // update user
+    public ResponseEntity<User> updateUser(User user, String email) {
+        Optional<User> existingUserOptional = userRepository.findByEmail(email);
+        if (existingUserOptional.isPresent()) {
+            User existingUser = existingUserOptional.get();
+            if(validUserDetails(user) && validPassword(user)){
+                existingUser.setFirstName(user.getFirstName());
+                existingUser.setLastName(user.getLastName());
+                existingUser.setPassword(encoder.encode(user.getPassword()));
+                // save updated entity
+                userRepository.save(existingUser);
+                return new ResponseEntity<>(existingUser, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // delete user by ID
+    public void deleteUser(int id) {
+        userRepository.deleteById(id);
+    }
+
+    // check role is valid or not
+    private boolean isValidRole(Role role) {
+        for (Role r : Role.values()) {
+            if (r == role) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // validate user details
+    private boolean validUserDetails(User user) {
+        return user.getFirstName() != null && user.getLastName() != null;
+    }
+
+    private boolean validEmail(User user) {
+        return user.getEmail() != null && !user.getEmail().isEmpty();
+    }
+
+    // validate user password
+    private boolean validPassword(User user) {
+        return user.getPassword() != null && !user.getPassword().isEmpty();
+    }
+
+    // checking user email is exist or not
+    private boolean isEmailAlreadyInUse(User user) {
+        try {
+            return userRepository.findByEmail(user.getEmail()) != null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
