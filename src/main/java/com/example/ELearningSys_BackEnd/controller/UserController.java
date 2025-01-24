@@ -40,9 +40,11 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update_profile")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
-        return userService.updateUser(user);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userService.updateUser(user, email);
     }
 
     @DeleteMapping("/delete_profile")

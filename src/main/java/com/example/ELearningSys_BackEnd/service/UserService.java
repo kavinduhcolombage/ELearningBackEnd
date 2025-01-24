@@ -79,9 +79,9 @@ public class UserService {
     }
 
     // update user
-    public ResponseEntity<User> updateUser(User user) {
+    public ResponseEntity<User> updateUser(User user, String email) {
 
-        Optional<User> existingUserOptional = userRepository.findByEmail(user.getEmail());
+        Optional<User> existingUserOptional = userRepository.findByEmail(email);
 
         if (existingUserOptional.isPresent()) {
             User existingUser = existingUserOptional.get();
