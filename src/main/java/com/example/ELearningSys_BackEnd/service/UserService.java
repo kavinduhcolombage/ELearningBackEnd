@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.example.ELearningSys_BackEnd.model.Role;
 import com.example.ELearningSys_BackEnd.model.User;
 import com.example.ELearningSys_BackEnd.repository.UserRepository;
@@ -37,20 +38,21 @@ public class UserService {
     public ResponseEntity<String> createUser(User user) {
         try {
             if (validUserDetails(user) && validEmail(user) && validPassword(user)) {
+                System.out.println("admin enter valid user detials");
                 if (!isEmailAlreadyInUse(user)) {
                     if (isValidRole(user.getRole())) {
                         user.setPassword(encoder.encode(user.getPassword()));
                         userRepository.save(user);
                         return new ResponseEntity<>("User Created successfully", HttpStatus.OK);
                     } else {
-                        return new ResponseEntity<>("Invalid role", HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>("Invalid Role", HttpStatus.BAD_REQUEST);
                     }
                 } else
                     return new ResponseEntity<>("Email already Used", HttpStatus.CONFLICT);
             } else {
                 return new ResponseEntity<>("Invalid details", HttpStatus.BAD_REQUEST);
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return new ResponseEntity<>("something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -121,10 +123,10 @@ public class UserService {
         Optional<User> existingUserOptional = userRepository.findByEmail(email);
         if (existingUserOptional.isPresent()) {
             User existingUser = existingUserOptional.get();
-            if(validUserDetails(user) && validPassword(user)){
+            if(validUserDetails(user)){
                 existingUser.setFirstName(user.getFirstName());
                 existingUser.setLastName(user.getLastName());
-                existingUser.setPassword(encoder.encode(user.getPassword()));
+                //existingUser.setPassword(encoder.encode(user.getPassword()));
                 // save updated entity
                 userRepository.save(existingUser);
                 return new ResponseEntity<>(existingUser, HttpStatus.OK);
@@ -168,7 +170,7 @@ public class UserService {
     // checking user email is exist or not
     private boolean isEmailAlreadyInUse(User user) {
         try {
-            return userRepository.findByEmail(user.getEmail()) != null;
+            return userRepository.findByEmail(user.getEmail()).isPresent();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
